@@ -6,3 +6,9 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.timeline-bg {
+    fill: var(--background-primary); /* 使用 Obsidian 主题中的全局变量 */
+}
+.timeline-line {
+    stroke: var(--background-secondary); /* 使用 Obsidian 中的颜色变量 */
+}
