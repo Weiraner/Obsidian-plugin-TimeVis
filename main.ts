@@ -111,8 +111,9 @@ export default class MyPlugin extends Plugin {
 							const jsonData = await this.app.vault.adapter.read(
 								filePath
 							);
-							const allEvents: CalendarEvent[] =
-								JSON.parse(jsonData);
+							// Extract the array from the data:[] wrapper
+							const allEvents = JSON.parse(jsonData);
+							// const allEvents: CalendarEvent[] = rawData.data || [];
 
 							const filteredEvents = allEvents.filter((event) => {
 								const startDate = event.start.split(" ")[2];
@@ -124,11 +125,7 @@ export default class MyPlugin extends Plugin {
 								);
 							});
 
-							if (filteredEvents.length > 0) {
-								renderCalendar(filteredEvents, el, targetDate);
-							} else {
-								el.textContent = `No events found for ${targetDate}.`;
-							}
+							renderCalendar(filteredEvents, el, targetDate);
 						} catch (error) {
 							console.error(
 								`Error reading or parsing file at ${filePath}:`,
