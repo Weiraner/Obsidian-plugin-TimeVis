@@ -6,7 +6,7 @@ This is a plugin used to present apple calendar in obsidian, and visualize stati
 
 ### Daily Calendar View
 
-Insert code block in obsidian like this:
+Insert code block in obsidian like following:
 
 ````
 \```timevis
