@@ -9,6 +9,7 @@ import {
 	Setting,
 } from "obsidian";
 import { renderCalendar, CalendarEvent } from "view/dayView";
+import {MyPluginTest} from "view/test";
 
 // Remember to rename these classes and interfaces!
 
@@ -97,48 +98,17 @@ export default class MyPlugin extends Plugin {
 		this.registerMarkdownCodeBlockProcessor(
 			"timevis",
 			async (source, el, ctx) => {
-				const [command, targetDate] = source.trim().split(/\s+/);
+				const [command, targetDate, count = "1"] = source.trim().split(/\s+/);
+				const days = parseInt(count);
 
 				if (command === "dayView" && targetDate) {
-					// get json file storing calendar event from: obsidianRoot/resource/CalendarEvent/2024-12.json
-					const filePath = `resource/CalendarEvent/${targetDate.slice(
-						0,
-						7
-					)}.json`;
-
-					if (await this.app.vault.adapter.exists(filePath)) {
-						try {
-							const jsonData = await this.app.vault.adapter.read(
-								filePath
-							);
-							// Extract the array from the data:[] wrapper
-							const allEvents = JSON.parse(jsonData);
-							// const allEvents: CalendarEvent[] = rawData.data || [];
-
-							const filteredEvents = allEvents.filter((event) => {
-								const startDate = event.start.split(" ")[2];
-								const endDate = event.end.split(" ")[2];
-								const targetDay = targetDate.split("-")[2];
-								return (
-									startDate === targetDay ||
-									endDate === targetDay
-								);
-							});
-
-							renderCalendar(filteredEvents, el, targetDate);
-						} catch (error) {
-							console.error(
-								`Error reading or parsing file at ${filePath}:`,
-								error
-							);
-							el.textContent = `Error loading events for ${targetDate}. Check the console for details.`;
-						}
-					} else {
-						el.textContent = `No data found for ${targetDate}. Expected file: ${filePath}`;
-					}
-				} else {
-					el.textContent =
-						"Invalid command or date. Use: `summary YYYY-MM-DD`.";
+					renderCalendar(this.app, el, targetDate, days);
+				} 
+				else if(command == "test"){
+					MyPluginTest;
+				}
+				else {
+					el.textContent = "Invalid command or date. Use: `summary YYYY-MM-DD`.";
 				}
 			}
 		);
