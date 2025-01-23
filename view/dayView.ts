@@ -286,15 +286,32 @@ export async function renderCalendar(app: App, container: HTMLElement, targetDat
 						rectHeight < fontSize + 2
 							? rectHeight / 2 + fontSize / 3
 							: fontSize;
-					// title
-					group
+					// title with ellipsis
+					const titleText = group
 						.append("text")
 						.text(event.title)
 						.attr("x", 45 + xOffset)
 						.attr("y", textY)
-						.style("fill", darkenColor(colorMap[event.calendar], 60)) // 与背景颜色同色系
+						.style("fill", darkenColor(colorMap[event.calendar], 60))
 						.style("font-size", fontSize)
 						.style("font-weight", "bold");
+
+					// Calculate maximum width for text (rectangle width minus padding)
+					const maxWidth = rectWidth - 20;
+					
+					// Function to truncate text with ellipsis
+					function truncateWithEllipsis(text: d3.Selection<SVGTextElement, unknown, null, undefined>, maxWidth: number) {
+						const node = text.node();
+						if (node) {
+							let textContent = node.textContent || "";
+							while (node.getComputedTextLength() > maxWidth && textContent.length > 0) {
+								textContent = textContent.slice(0, -1);
+								text.text(textContent + "...");
+							}
+						}
+					}
+
+					truncateWithEllipsis(titleText, maxWidth);
 
 					// duration time
 					if (duration > 30) {
